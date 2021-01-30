@@ -10,6 +10,9 @@
 #define STASSID "mohamed"
 #define STAPSK  "mohamed1998"
 
+const uint16_t port = 8090;
+const char * host = "192.168.1.83";
+
 void setup()
 {
   Serial.begin(115200);
@@ -31,26 +34,20 @@ void loop()
   HTTPClient http ;
   WiFiClient client;
 
-// Our Site 
- http.begin("http://ardu-api.herokuapp.com/message/");
- http.addHeader("Content-Type","application/json");
- String string = "{\"name\":\"First Name\",\"message\":\"First Message\"}";
-//  String data = "{"name":"Mohamed","message":"Hello world"}";
- //http.addHeader("Authorization","basic bW9oYW1lZDptb2hhbWVk") ;
+ if (!client.connect(host, port)) {
 
-  int httpcode  = http.POST(string);
-  Serial.println(httpcode);
-  if(httpcode > 0)
-  {
-    String payload  = http.getString();
-    Serial.println("the response is : ");
-    Serial.println(payload);
-  }
-  else 
-  {
-    Serial.print("Connection fail");
-  }
-  http.end();
-  delay(10000);
+        Serial.println("Connection to host failed");
 
+        delay(1000);
+        return;
+    }
+
+    Serial.println("Connected to server successful!");
+
+    client.print("Hello from ESP32!");
+
+    Serial.println("Disconnecting...");
+    client.stop();
+
+    delay(10000);
 }
